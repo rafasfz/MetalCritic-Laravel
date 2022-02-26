@@ -15,8 +15,12 @@ class CreateReviewsTable extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->uuid('id');
-            $table->uuid('user_id');
-            $table->uuid('game_id');
+            $table->foreignUuid('user_id')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreignUuid('game_id')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->integer('score');
             $table->string('comment');
             $table->timestamps();
