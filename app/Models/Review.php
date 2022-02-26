@@ -15,13 +15,12 @@ class Review extends Model
         static::creating(fn(Review $review) => $review->id = (string) Str::uuid());
     }
 
-    public function reviewable()
-    {
-        return $this->morphTo();
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function game() {
+        return $this->belongsTo(Game::class);
     }
 }

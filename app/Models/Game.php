@@ -17,6 +17,6 @@ class Game extends Model
 
     public function reviews()
     {
-        return $this->morphMany(Review::class, 'reviewable');
+        return $this->hasMany(Review::class);
     }
 }

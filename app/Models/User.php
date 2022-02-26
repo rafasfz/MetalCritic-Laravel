@@ -32,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function reviews() {
-        return $this->morphMany(Review::class, 'reviewable');
+        return $this->hasMany(Review::class);
     }
 
     public function games() {
