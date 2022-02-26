@@ -15,3 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/users', 'App\Http\Controllers\UserController@store');
+Route::get('/users/{id}', 'App\Http\Controllers\UserController@show');

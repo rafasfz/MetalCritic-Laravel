@@ -10,7 +10,7 @@ class UserController extends Controller
 {
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['store']]);
+        $this->middleware('auth:api', ['except' => ['store', 'show']]);
     }
 
     public function store(Request $request) {
@@ -46,6 +46,21 @@ class UserController extends Controller
         $user->password = $hash;
         $user->save();
         $user = User::where('email', $email)->first();
+
+
+        return $user;
+    }
+
+    public function show($id) {
+        $user = User::find($id);
+
+        if(!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $user->reviews = $user->reviews;
 
         return $user;
     }
