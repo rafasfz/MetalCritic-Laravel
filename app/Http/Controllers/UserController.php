@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Game;
 
 class UserController extends Controller
 {
@@ -61,6 +62,10 @@ class UserController extends Controller
         }
 
         $user->reviews = $user->reviews;
+
+        foreach($user->reviews as $review) {
+            $review->game = $review->game;
+        }
 
         return $user;
     }
