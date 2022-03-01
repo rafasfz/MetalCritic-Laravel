@@ -14,5 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::any('/401', function () {
+    return response()->json([
+        'message' => 'Unauthorized'
+    ], 401);
+})->name('login');
+
 Route::post('/users', 'App\Http\Controllers\UserController@store');
 Route::get('/users/{id}', 'App\Http\Controllers\UserController@show');
+Route::put('/users/{id}', 'App\Http\Controllers\UserController@update');
