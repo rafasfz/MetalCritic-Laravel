@@ -58,4 +58,37 @@ class GameController extends Controller
 
         return $game;
     }
+
+    public function index(Request $request) {
+        $page = $request->input('page') ? $request->input('page') : 1;
+        $limit = $request->input('limit') ? $request->input('limit') : 2;
+        $order = $request->input('order');
+        $page--;
+
+        if($order === "name") {
+            $games = Game::orderBy('name', 'asc')
+                ->offSet($page * $limit)
+                ->limit($limit)
+                ->get();
+        } else {
+            $games = Game::orderBy('release_date', 'desc')
+                ->offSet($page * $limit)
+                ->limit($limit)
+                ->get();
+        }
+
+        return $games;
+    }
+
+    public function show($id) {
+        $game = Game::find($id);
+
+        if(!$game) {
+            return response()->json([
+                'message' => 'Game not found'
+            ], 404);
+        }
+
+        return $game;
+    }
 }
