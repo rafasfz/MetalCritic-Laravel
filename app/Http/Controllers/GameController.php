@@ -91,4 +91,51 @@ class GameController extends Controller
 
         return $game;
     }
+
+    public function update(Request $request, $id) {
+        $game = Game::find($id);
+
+        if(!$game) {
+            return response()->json([
+                'message' => 'Game not found'
+            ], 404);
+        }
+
+        $name = $request->input('name');
+        $publisher = $request->input('publisher');
+        $developer = $request->input('developer');
+        $release_date = $request->input('release_date');
+
+        $user = User::find($this->loggedUser->id);
+
+        if(!$user->is_admin) {
+            return redirect()->route('login');
+        }
+
+        if($name) {
+            $game->name = $name;
+        }
+
+        if($publisher) {
+            $game->publisher = $publisher;
+        }
+
+        if($developer) {
+            $game->developer = $developer;
+        }
+
+        if($release_date) {
+            if(strtotime($release_date) === false) {
+                return response()->json([
+                    'message' => 'Release date is not valid'
+                ], 400);
+            }
+
+            $game->release_date = $release_date;
+        }
+
+        $game->save();
+
+        return $game;
+    }
 }
