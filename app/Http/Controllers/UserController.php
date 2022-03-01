@@ -131,4 +131,41 @@ class UserController extends Controller
         return $user;
 
     }
+
+    public function delete(Request $request, $id) {
+        $user = User::find($id);
+
+        if(!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        if($this->loggedUser->id !== $id) {
+            return response()->json([
+                'message' => 'You are not allowed to delete this user'
+            ], 403);
+        }
+
+        $password = $request->input('password');
+
+        if(!$password) {
+            return response()->json([
+                'message' => 'Please provide password to delete a user'
+            ], 400);
+        }
+
+        if(!Auth::attempt(['email' => $user->email, 'password' => $password])) {
+            return response()->json([
+                'message' => 'Wrong password'
+            ], 400);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'User deleted'
+        ]);
+
+    }
 }

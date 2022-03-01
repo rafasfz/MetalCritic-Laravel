@@ -23,5 +23,6 @@ Route::any('/401', function () {
 Route::post('/users', 'App\Http\Controllers\UserController@store');
 Route::get('/users/{id}', 'App\Http\Controllers\UserController@show');
 Route::put('/users/{id}', 'App\Http\Controllers\UserController@update');
+Route::delete('/users/{id}', 'App\Http\Controllers\UserController@delete');
 
 Route::post('/tokens', 'App\Http\Controllers\TokenController@store');
