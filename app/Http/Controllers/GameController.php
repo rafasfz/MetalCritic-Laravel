@@ -138,4 +138,26 @@ class GameController extends Controller
 
         return $game;
     }
+
+    public function delete($id) {
+        $game = Game::find($id);
+
+        if(!$game) {
+            return response()->json([
+                'message' => 'Game not found'
+            ], 404);
+        }
+
+        $user = User::find($this->loggedUser->id);
+
+        if(!$user->is_admin) {
+            return redirect()->route('login');
+        }
+
+        $game->delete();
+
+        return response()->json([
+            'message' => 'Game deleted'
+        ], 200);
+    }
 }
