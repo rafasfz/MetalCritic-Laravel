@@ -26,3 +26,5 @@ Route::put('/users/{id}', 'App\Http\Controllers\UserController@update');
 Route::delete('/users/{id}', 'App\Http\Controllers\UserController@delete');
 
 Route::post('/tokens', 'App\Http\Controllers\TokenController@store');
+
+Route::post('/games', 'App\Http\Controllers\GameController@store');
