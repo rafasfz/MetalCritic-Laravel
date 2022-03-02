@@ -80,7 +80,11 @@ class GameController extends Controller
         return $games;
     }
 
-    public function show($id) {
+    public function show(Request $request, $id) {
+        $page = $request->input('page') ? $request->input('page') : 1;
+        $limit = $request->input('limit') ? $request->input('limit') : 2;
+        $page--;
+
         $game = Game::find($id);
 
         if(!$game) {
@@ -88,6 +92,12 @@ class GameController extends Controller
                 'message' => 'Game not found'
             ], 404);
         }
+
+        $game->reviews = $game->reviews()
+            ->orderBy('created_at', 'desc')
+            ->offSet($page * $limit)
+            ->limit($limit)
+            ->get();
 
         return $game;
     }
