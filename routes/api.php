@@ -34,3 +34,5 @@ Route::put('/games/{id}', 'App\Http\Controllers\GameController@update');
 Route::delete('/games/{id}', 'App\Http\Controllers\GameController@delete');
 
 Route::post('/reviews', 'App\Http\Controllers\ReviewController@store');
+Route::get('/reviews/{id}', 'App\Http\Controllers\ReviewController@show');
+Route::get('/reviews', 'App\Http\Controllers\ReviewController@index');

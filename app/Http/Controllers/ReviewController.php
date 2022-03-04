@@ -82,4 +82,71 @@ class ReviewController extends Controller
 
         return $review;
     }
+
+    function index(Request $request) {
+        $game = $request->input('game');
+        $user = $request->input('user');
+        $limit = $request->input('limit') ? $request->input('limit') : 2;
+        $page = $request->input('page') ? $request->input('page') : 1;
+        $order_column = $request->input('order_column') ? $request->input('order_column') : 'created_at';
+        $order = $request->input('order') === 'desc' ? 'desc' : 'asc';
+        $page--;
+
+        if($game) {
+            $game = Game::where('id', $game)->first();
+
+            if(!$game) {
+                return response()->json([
+                    'message' => 'Game not found'
+                ], 404);
+            }
+
+            $reviews = Review::where('game_id', $game->id)
+                ->orderBy($order_column, $order)
+                ->offSet($page * $limit)
+                ->limit($limit)
+                ->get();
+
+            $total_pages = ceil(Review::where('game_id', $game->id)->count() / $limit);
+        }
+        else if($user) {
+            $user = User::where('id', $user)->first();
+
+            if(!$user) {
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+
+            $reviews = Review::where('user_id', $user->id)
+                ->orderBy($order_column, $order)
+                ->offSet($page * $limit)
+                ->limit($limit)
+                ->get();
+
+            $total_pages = ceil(Review::where('user_id', $user->id)->count() / $limit);
+        } else {
+            $reviews = Review::orderBy($order_column, $order)
+                ->offSet($page * $limit)
+                ->limit($limit)
+                ->get();
+
+            $total_pages = ceil(Review::count() / $limit);
+        }
+
+        return ['reviews' => $reviews, 'total_pages' => $total_pages];
+    }
+
+    function show($id) {
+        $review = Review::find($id);
+        $review->game = $review->game;
+
+        if(!$review) {
+            return response()->json([
+                'message' => 'Review not found'
+            ], 404);
+        }
+
+        return $review;
+    }
 }
