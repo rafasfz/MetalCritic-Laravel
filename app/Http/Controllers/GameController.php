@@ -70,14 +70,18 @@ class GameController extends Controller
                 ->offSet($page * $limit)
                 ->limit($limit)
                 ->get();
+
+            $total_pages = ceil(Game::count() / $limit);
         } else {
             $games = Game::orderBy('release_date', 'desc')
                 ->offSet($page * $limit)
                 ->limit($limit)
                 ->get();
+
+            $total_pages = ceil(Game::count() / $limit);
         }
 
-        return $games;
+        return ['games' => $games, 'total_pages' => $total_pages];
     }
 
     public function show(Request $request, $id) {
