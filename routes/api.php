@@ -37,3 +37,9 @@ Route::post('/reviews', 'App\Http\Controllers\ReviewController@store');
 Route::get('/reviews/{id}', 'App\Http\Controllers\ReviewController@show');
 Route::get('/reviews', 'App\Http\Controllers\ReviewController@index');
 Route::delete('/reviews/{id}', 'App\Http\Controllers\ReviewController@delete');
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Not Found'
+    ], 404);
+});
