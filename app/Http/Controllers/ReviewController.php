@@ -149,4 +149,40 @@ class ReviewController extends Controller
 
         return $review;
     }
+
+    function delete($id) {
+        $review = Review::find($id);
+
+        if(!$review) {
+            return response()->json([
+                'message' => 'Review not found'
+            ], 404);
+        }
+
+        if($review->user_id !== $this->loggedUser->id) {
+            return response()->json([
+                'message' => 'You are not allowed to delete this review'
+            ], 403);
+        }
+
+        $game = Game::find($review->game_id);
+
+        $review->delete();
+
+        $reviews = $game->reviews;
+
+        if(count($reviews) === 0) {
+            $game->score = null;
+        } else {
+            $gameScore = 0;
+            foreach($reviews as $gameReview) {
+                $gameScore += $gameReview->score;
+            }
+            $game->score = $gameScore / count($reviews);
+        }
+
+        return response()->json([
+            'message' => 'Review deleted'
+        ], 200);
+    }
 }
