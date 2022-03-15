@@ -133,7 +133,7 @@ class ReviewController extends Controller
 
             $total_pages = ceil(Review::count() / $limit);
         }
-
+        $next_page_url = url('/api/reviews?page=' . ($page + 2) . '&limit=' . $limit . '&order_column=' . $order_column . '&order=' . $order . ($game ? '&game=' . $game->id : '') . ($user ? '&user=' . $user->id : ''));
         return ['reviews' => $reviews, 'total_pages' => $total_pages];
     }
 

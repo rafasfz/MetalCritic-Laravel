@@ -90,7 +90,11 @@ class GameController extends Controller
         $next_page_url = $page + 1 < $total_pages
             ? url('/api/games?page=' . ($page + 2) . '&limit=' . $limit . '&order=' . $order)
             : null;
-        return ['games' => $games, 'total_pages' => $total_pages, 'next_page_url' => $next_page_url];
+        return response()->json([
+            'games' => $games,
+            'total_pages' => $total_pages,
+            'next_page_url' => $next_page_url
+        ]);
     }
 
     public function show(Request $request, $id) {
