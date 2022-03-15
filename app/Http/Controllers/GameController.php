@@ -62,11 +62,18 @@ class GameController extends Controller
     public function index(Request $request) {
         $page = $request->input('page') ? $request->input('page') : 1;
         $limit = $request->input('limit') ? $request->input('limit') : 2;
-        $order = $request->input('order');
+        $order = $request->input('order') ? $request->input('order') : null;
         $page--;
 
         if($order === "name") {
             $games = Game::orderBy('name', 'asc')
+                ->offSet($page * $limit)
+                ->limit($limit)
+                ->get();
+
+            $total_pages = ceil(Game::count() / $limit);
+        } else if($order == "score") {
+            $games = Game::orderBy('score', 'desc')
                 ->offSet($page * $limit)
                 ->limit($limit)
                 ->get();
@@ -80,8 +87,10 @@ class GameController extends Controller
 
             $total_pages = ceil(Game::count() / $limit);
         }
-
-        return ['games' => $games, 'total_pages' => $total_pages];
+        $next_page_url = $page + 1 < $total_pages
+            ? url('/api/games?page=' . ($page + 2) . '&limit=' . $limit . '&order=' . $order)
+            : null;
+        return ['games' => $games, 'total_pages' => $total_pages, 'next_page_url' => $next_page_url];
     }
 
     public function show(Request $request, $id) {

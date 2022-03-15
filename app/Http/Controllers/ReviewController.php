@@ -139,13 +139,14 @@ class ReviewController extends Controller
 
     function show($id) {
         $review = Review::find($id);
-        $review->game = $review->game;
 
         if(!$review) {
             return response()->json([
                 'message' => 'Review not found'
             ], 404);
         }
+
+        $review->game = $review->game;
 
         return $review;
     }
