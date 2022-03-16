@@ -27,6 +27,8 @@ Route::delete('/users/{id}', 'App\Http\Controllers\UserController@delete');
 
 Route::post('/tokens', 'App\Http\Controllers\TokenController@store');
 
+Route::post('/games/{id}/images', 'App\Http\Controllers\GameImageController@store');
+
 Route::post('/games', 'App\Http\Controllers\GameController@store');
 Route::get('/games', 'App\Http\Controllers\GameController@index');
 Route::get('/games/{id}', 'App\Http\Controllers\GameController@show');
