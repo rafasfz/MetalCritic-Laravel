@@ -69,4 +69,37 @@ class GameImageController extends Controller
 
         return $game;
     }
+
+    public function delete($id) {
+        $user = User::find($this->loggedUser->id);
+
+        if(!$user->is_admin) {
+            return redirect()->route('login');
+        }
+
+        $game = Game::find($id);
+
+        if(!$game) {
+            return response()->json([
+                'message' => 'Game not found'
+            ], 404);
+        }
+
+        if(!$game->image) {
+            return response()->json([
+                'message' => 'No image found'
+            ], 404);
+        }
+
+        if(Storage::exists('games/' . $game->image)) {
+            Storage::delete('games/' . $game->image);
+        }
+
+        $game->image = null;
+        $game->save();
+
+        return response()->json([
+            'message' => 'Image deleted'
+        ], 200);
+    }
 }
