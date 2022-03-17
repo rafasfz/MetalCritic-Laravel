@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+// use Illuminate\Http\Response;
+// use Illuminate\Http\File;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Game;
@@ -15,6 +17,39 @@ class GameImageController extends Controller
     public function __construct() {
         $this->middleware('auth:api', ['except' => ['show', 'index']]);
         $this->loggedUser = auth()->user();
+    }
+
+    public function show(Request $request, $id) {
+        $game = Game::find($id);
+
+        if(!$game) {
+            return response()->json([
+                'message' => 'Game not found'
+            ], 404);
+        }
+
+        if(!$game->image) {
+            return response()->json([
+                'message' => 'No game image found'
+            ], 404);
+        }
+
+        if(!Storage::exists('games/' . $game->image)) {
+            return response()->json([
+                'message' => 'Image not found'
+            ], 404);
+        }
+
+        $image = Storage::get('games/' . $game->image);
+
+        $type = Storage::mimeType('games/' . $game->image);
+
+        return response($image, 200)->header('Content-Type', $type);
+
+
+        // $image = Storage::get('games/' . $game->image);
+
+        // return $image;
     }
 
     public function store(Request $request, $id)

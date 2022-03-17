@@ -29,6 +29,7 @@ Route::post('/tokens', 'App\Http\Controllers\TokenController@store');
 
 Route::post('/games/{id}/images', 'App\Http\Controllers\GameImageController@store');
 Route::delete('/games/{id}/images', 'App\Http\Controllers\GameImageController@delete');
+Route::get('/games/{id}/images', 'App\Http\Controllers\GameImageController@show');
 
 Route::post('/games', 'App\Http\Controllers\GameController@store');
 Route::get('/games', 'App\Http\Controllers\GameController@index');
