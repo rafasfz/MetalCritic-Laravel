@@ -24,6 +24,12 @@ class Game extends Model
             unset($game->imageURL);
         });
 
+        static::updated(fn(Game $game) =>
+            $game->imageURL
+            = $game->image !== null
+            ? url('/api/games/' . $game->id . '/images/')
+            : null);
+
     }
 
     public function reviews()
