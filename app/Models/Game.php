@@ -19,6 +19,11 @@ class Game extends Model
             = $game->image !== null
             ? url('/api/games/' . $game->id . '/images/')
             : null);
+
+        static::updating(function(Game $game) {
+            unset($game->imageURL);
+        });
+
     }
 
     public function reviews()
