@@ -13,6 +13,12 @@ class Game extends Model
     protected static function booted()
     {
         static::creating(fn(Game $game) => $game->id = (string) str::uuid());
+
+        static::retrieved(fn(Game $game) =>
+            $game->imageURL
+            = $game->image !== null
+            ? url('/api/games/' . $game->id . '/images/')
+            : null);
     }
 
     public function reviews()
