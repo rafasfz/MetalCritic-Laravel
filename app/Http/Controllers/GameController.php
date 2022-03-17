@@ -16,6 +16,20 @@ class GameController extends Controller
         $this->loggedUser = auth()->user();
     }
 
+    private function getManyGames($page, $limit, $orderProperty, $order) {
+        $games = Game::orderBy($orderProperty, $order)
+                ->offSet($page * $limit)
+                ->limit($limit)
+                ->get();
+        $total = Game::count();
+        $total_pages = ceil($total / $limit);
+
+        return [
+            'games' => $games,
+            'total_pages' => $total_pages
+        ];
+    }
+
     public function store(Request $request) {
         $name = $request->input('name');
         $publisher = $request->input('publisher');
@@ -62,34 +76,17 @@ class GameController extends Controller
     public function index(Request $request) {
         $page = $request->input('page') ? $request->input('page') : 1;
         $limit = $request->input('limit') ? $request->input('limit') : 2;
-        $order = $request->input('order') ? $request->input('order') : null;
+        $order = $request->input('order') ? $request->input('order') : 'asc';
+        $order = $order === 'desc' ? 'desc' : 'asc';
+        $orderBy = $request->input('order') ? $request->input('order') : null;
+        $orderBy = $orderBy === 'name' || $order === 'score' ? $order : 'release_date';
         $page--;
 
-        if($order === "name") {
-            $games = Game::orderBy('name', 'asc')
-                ->offSet($page * $limit)
-                ->limit($limit)
-                ->get();
-
-            $total_pages = ceil(Game::count() / $limit);
-        } else if($order == "score") {
-            $games = Game::orderBy('score', 'desc')
-                ->offSet($page * $limit)
-                ->limit($limit)
-                ->get();
-
-            $total_pages = ceil(Game::count() / $limit);
-        } else {
-            $games = Game::orderBy('release_date', 'desc')
-                ->offSet($page * $limit)
-                ->limit($limit)
-                ->get();
-
-            $total_pages = ceil(Game::count() / $limit);
-        }
+        ['games' => $games, 'total_pages' => $total_pages] = $this->getManyGames($page, $limit, $orderBy, $order);
         $next_page_url = $page + 1 < $total_pages
             ? url('/api/games?page=' . ($page + 2) . '&limit=' . $limit . '&order=' . $order)
             : null;
+
         return response()->json([
             'games' => $games,
             'total_pages' => $total_pages,
