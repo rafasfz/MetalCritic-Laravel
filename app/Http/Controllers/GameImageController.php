@@ -45,11 +45,6 @@ class GameImageController extends Controller
         $type = Storage::mimeType('games/' . $game->image);
 
         return response($image, 200)->header('Content-Type', $type);
-
-
-        // $image = Storage::get('games/' . $game->image);
-
-        // return $image;
     }
 
     public function store(Request $request, $id)
