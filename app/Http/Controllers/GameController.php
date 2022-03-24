@@ -99,19 +99,17 @@ class GameController extends Controller
         $limit = $request->input('limit') ? $request->input('limit') : 2;
         $page--;
 
-        $game = Game::find($id);
+        $game = Game::with(['reviews' => function($query) use ($limit, $page) {
+            $query->orderBy('created_at', 'desc')
+                ->offSet($page * $limit)
+                ->limit($limit);
+        }])->find($id);
 
         if(!$game) {
             return response()->json([
                 'message' => 'Game not found'
             ], 404);
         }
-
-        $game->reviews = $game->reviews()
-            ->orderBy('created_at', 'desc')
-            ->offSet($page * $limit)
-            ->limit($limit)
-            ->get();
 
         return $game;
     }
